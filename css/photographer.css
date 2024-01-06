@@ -1,76 +1,279 @@
 #contact_modal {
-    display: none;
+  display: none;
 }
 
 .photograph-header {
-    background-color: #FAFAFA;
-    height: 300px;
-    margin: 0 100px;
+  background-color: #fafafa;
+  height: 300px;
+  margin: 0 100px;
 }
 
 .contact_button {
-    font-size: 20px;
-    font-weight: bold;
-    color: white;
-    padding: 11px;
-    width: 170px;
-    height: 70px;
-    border: none;
-    background-color: #901C1C;
-    border-radius: 5px;
-    cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  padding: 11px;
+  width: 170px;
+  height: 70px;
+  border: none;
+  background-color: #901c1c;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .modal {
-    border-radius: 5px;
-    background-color: #DB8876;
-    width: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    padding: 35px;
-    margin: auto;
+  border-radius: 5px;
+  background-color: #db8876;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 35px;
+  margin: auto;
 }
 
 .modal header {
-    justify-content: space-between;
-    width: 100%;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .modal header img {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .modal header h2 {
-    font-size: 64px;
-    font-weight: normal;
-    text-align: center;
+  font-size: 64px;
+  font-weight: normal;
+  text-align: center;
 }
 
 form {
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-    align-items: flex-start;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 form label {
-    color: #312E2E;
-    font-size: 36px;
+  color: #312e2e;
+  font-size: 36px;
 }
 
 form div {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    align-items: self-start;
-    margin-bottom: 26px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: self-start;
+  margin-bottom: 26px;
 }
 
 form input {
-    width: 100%;
-    height: 68px;
-    border: none;
-    border-radius: 5px;
+  width: 100%;
+  height: 68px;
+  border: none;
+  border-radius: 5px;
+}
+/* --------------------------style affichage photo profile et info ------------------------------ */
+.photograph-header {
+  background-color: #fafafa;
+  height: 300px;
+  margin: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+}
+.photograph-header .info_persso h2 {
+  color: #d3573c;
+  font-size: 35px;
+}
+.photograph-header .info_persso p:nth-child(2) {
+  color: #901c1c;
+  font-size: 15x;
+}
+.photograph-header .info_persso p:nth-child(3) {
+  color: #525252;
+  font-size: 12px;
+}
+.photograph-header .img {
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 100%;
+}
+.photograph-header .img img {
+  border-radius: 100%;
+  width: 80%;
+  height: 80%;
+  object-fit: cover;
+  transform: translateY(23px) translateX(20px) scale(1.5);
+}
+/* --------------------------style affichage de leurs photographie  ------------------------------ */
+section {
+  width: 80%;
+  height: auto;
+  margin: auto;
+  padding-top: 25px;
+  margin-bottom: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 300px);
+  justify-content: center;
+  grid-gap: 75px;
+}
+section .container {
+  width: auto;
+  height: auto;
+  margin-bottom: 28px;
+  transition: 0.5s ease-in-out;
+}
+section .container .img_block {
+  width: auto;
+  height: 250px;
+}
+section .container .img_block img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 5%;
+  cursor: pointer;
+}
+section .container .name_like {
+  display: flex;
+  justify-content: space-between;
+  height: auto;
+}
+section .container .name_like .h3 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 35px;
+  color: #901c1c;
+  font-size: 12px;
+}
+section .container .name_like .nmberIcon {
+  width: 20%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 35px;
+}
+section .container .name_like .like {
+  cursor: pointer;
+}
+section .container .name_like .like.color {
+  color: red;
+}
+
+/* -----------------------style du totla de like et prix------------------------- */
+.like_priceTotal {
+  background-color: #db8876;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 200px;
+  height: 50px;
+  position: fixed;
+  top: 94%;
+  left: 80%;
+  padding-left: 20px;
+  padding-right: 20px;
+  z-index: 1;
+}
+.like_priceTotal .like_total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+/* -----------------------modal photo pour slide------------------------- */
+.modalPhoto.afficheModalPhoto {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  justify-content: center;
+}
+.modalPhoto {
+  display: none;
+}
+.modalPhoto .imgcontainer {
+  width: 50%;
+  height: 600px;
+}
+.modalPhoto .imgcontainer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.modalPhoto .imgcontainer1None {
+  width: 50%;
+  height: 600px;
+}
+
+.modalPhoto .imgcontainer1None img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.modalPhoto .imgcontainer .containt_all {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+.modalPhoto .imgcontainer1None .containt_all {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+.imgcontainer .containt_all.active {
+  display: block;
+  animation: fade 0.8s;
+}
+.imgcontainer1None .containt_all.active {
+  display: block;
+  animation: fade 0.8s;
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.modalPhoto .blockVideo {
+  width: 50%;
+  height: 600px;
+}
+.modalPhoto ion-icon {
+  font-size: 55px;
+  color: #901c1c;
+  cursor: pointer;
+}
+.modalPhoto .closeModule {
+  position: absolute;
+  right: 100px;
+  top: 55px;
+}
+.modalPhoto h3 {
+  position: absolute;
+  bottom: 1%;
+  left: 15%;
+  color: #901c1c;
+  font-size: 15px;
+}
+/* ------------------------les display none-------------- */
+#contact_modal {
+  display: none;
+}
+.noneAll {
+  display: block;
+}
+.noneAll.none {
+  display: none;
 }
