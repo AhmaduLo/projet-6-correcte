@@ -12,6 +12,11 @@ const chevronplus = document.getElementsByClassName("chevronplus");
 const chevronmoins = document.getElementsByClassName("chevronmoins");
 const containt_all = document.getElementsByClassName("containt_all");
 const imgToSlide = document.getElementsByClassName("imgToSlide");
+const contact_modal = document.getElementById("contact_modal");
+const containtTrie = document.querySelector(".containtTrie");
+const chevron_ouvert = document.getElementsByClassName("chevron_ouvert");
+const containerTrier = document.querySelector(".containerTrier");
+
 // Récupérer le fragment d'URL (tout ce qui suit le dièse #)
 var fragmentUrl = window.location.hash;
 // Retirer le dièse (#) pour obtenir uniquement l'ID
@@ -109,6 +114,7 @@ function afficheProfil(profil, media) {
             //--faire apparaitre le module des photos pour le slide-----
             modalPhoto.classList.add("afficheModalPhoto");
             noneAll.classList.add("none");
+            contact_modal.style.display = "none";
             //------condition pour siblier photo cliquer------
             if (e.target.nodeName == "VIDEO") {
               var url = e.target.children[0].src;
@@ -214,5 +220,91 @@ function slider(itemeArrayPhotos, firstName) {
     }
   }
 }
+//------------function triage----------------------
+let ArrayTries = [];
+function trie() {
+  ArrayTries = [{ name: "Populaire" }, { name: "Date" }, { name: "Titre" }];
+  ArrayTries.forEach((item) => {
+    containerTrier.innerHTML += ` 
+    <div class="elementTexteClique">${item.name} </div>
+    <span></span>
+    `;
+  });
+  chevron_ouvert[0].addEventListener("click", () => {
+    containtTrie.classList.toggle("afterclick");
+    chevron_ouvert[0].classList.toggle("rotate");
+  });
+}
+trie();
+//-----------echanger les element apres lique--------
+//---------- Add click event listener to each element---populaire-----
+function addClickEventListeners() {
+  const elementTexteClique = document.querySelectorAll(".elementTexteClique");
 
+  elementTexteClique.forEach((element, index) => {
+    element.addEventListener("click", (e) => {
+      handleItemClick(e, index);
+    });
+  });
+}
+function handleItemClick(e, index) {
+  const clickedItem = ArrayTries[index];
+  ArrayTries[index] = ArrayTries[0];
+  ArrayTries[0] = clickedItem;
+  // Réinitialisez le contenu de containerTrier
+  containerTrier.innerHTML = "";
+  // Mise à jour du tableau ArrayTries
+  const newArrayTries = ArrayTries.map((item) => ({ name: item.name }));
+  ArrayTries = newArrayTries;
+  // Affichez les éléments dans containerTrier
+  ArrayTries.forEach((item) => {
+    containerTrier.innerHTML += `
+           <div class="elementTexteClique">${item.name}</div>
+           <span></span>
+       `;
+  });
+  addClickEventListeners();
+  //--------------------------------------------------------
+  const photos = Array.from(section.getElementsByClassName("container"));
+  if (e.target.textContent == "Populaire") {
+    // Triez les photos en fonction du nombre de likes
+    photos.sort(function (a, b) {
+      const likesA = parseInt(a.getAttribute("data-likes"));
+      const likesB = parseInt(b.getAttribute("data-likes"));
+      return likesB - likesA; // Triez de manière décroissante
+    });
+  } else if (e.target.textContent == "Date") {
+    photos.sort(function (a, b) {
+      const dateA = parseInt(a.getAttribute("data-date"));
+      const dateB = parseInt(b.getAttribute("data-date"));
+      return dateB - dateA; // Triez de manière décroissante
+    });
+  } else {
+    photos.sort(function (a, b) {
+      const titleA = a.querySelector(".title").textContent;
+      const titleB = b.querySelector(".title").textContent;
+      return titleA.localeCompare(titleB); // Triez de manière alphabétique
+    });
+  }
+  // Supprimez toutes les photos du conteneur
+  section.innerHTML = "";
+  // Ajoutez les photos triées au conteneur
+  photos.forEach(function (photo) {
+    section.appendChild(photo);
+    //console.log(photo.children[1].children[1].children[1]);
+    //--------------click du like----------------
+    //return nombreLike(itemMedia)
+    for (let i = 0; i < likeIcons.length; i++) {
+      likeIcons[i].addEventListener("click", (e) => {
+        likeIcons[i].classList.add("color");
+      });
+    }
+  });
+}
+
+function keyboxdeplacement(){
+
+}
+keyboxdeplacement()
+addClickEventListeners();
 getPhotographers();

@@ -267,9 +267,107 @@ section .container .name_like .like.color {
   color: #901c1c;
   font-size: 15px;
 }
+/* ------------------------css formulaire-------------- */
+.modal {
+  border-radius: 5px;
+  background-color: #db8876;
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 35px;
+  margin: auto;
+  margin-bottom: 95px;
+}
+.modal header h2 {
+  font-size: 44px;
+  font-weight: normal;
+  text-align: center;
+}
+form input {
+  width: 100%;
+  height: 50px;
+  border: none;
+  border-radius: 5px;
+  font-size: 30px;
+}
+form label {
+  color: #312e2e;
+  font-size: 26px;
+}
+form textarea {
+  font-size: 25px;
+}
+/* ------------------------css trier*------- */
+.trier {
+  width: 80%;
+  height: auto;
+  margin: auto;
+  display: flex;
+  /* align-items: center; */
+}
+.trier .containtTrie {
+  position: relative;
+  width: 120px;
+  height: 20px;
+  color: rgb(255, 255, 255);
+  font-size: 17px;
+  background-color: #901c1c;
+  border-radius: 5%;
+  margin-left: 25px;
+  padding: 10px;
+  display: grid;
+  grid-gap: 10px;
+  overflow: hidden;
+  transition: all 0.8s;
+}
+.trier .containtTrie .containerTrier {
+  color: rgb(255, 255, 255);
+  font-size: 17px;
+  background-color: #901c1c;
+  border-radius: 5%;
+  margin-left: 2px;
+  display: grid;
+  grid-gap: 10px;
+  overflow: hidden;
+  transition: all 0.8s;
+}
+.trier .containtTrie.afterclick {
+  height: 140px;
+  transition: all 0.8s;
+}
+.trier .containtTrie .chevron_ouvert {
+  position: absolute;
+  cursor: pointer;
+  left: 80%;
+  top: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  transition: all 0.8s;
+}
+.trier .containtTrie .chevron_ouvert.rotate {
+  transform: rotate(180deg);
+  transition: all 0.8s;
+}
+.trier .containtTrie div {
+  display: flex;
+  cursor: pointer;
+}
+.trier .containtTrie span {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background-color: rgb(255, 255, 255);
+  margin-top: 15px;
+}
+
 /* ------------------------les display none-------------- */
 #contact_modal {
   display: none;
+}
+#contact_modal.block {
+  display: block;
 }
 .noneAll {
   display: block;
