@@ -100,14 +100,15 @@ function afficheProfil(profil, media) {
             </div>
             </div>
             `;
-
+          ArrayLikes.push(itemMedia.likes);
           nombreLike(itemMedia);
         }
       });
+      totalLikes();
       //-------------clique sur l'image et slide---------------------
       for (let i = 0; i < img_block.length; i++) {
         img_block[i].addEventListener("click", (e) => {
-          ArrayPhotos.forEach((itemeArrayPhotos) => {
+          ArrayPhotos.forEach((itemeArrayPhotos, index) => {
             const namePhoto =
               e.target.parentElement.parentElement.children[1].children[0]
                 .children[0].textContent;
@@ -115,6 +116,7 @@ function afficheProfil(profil, media) {
             modalPhoto.classList.add("afficheModalPhoto");
             noneAll.classList.add("none");
             contact_modal.style.display = "none";
+
             //------condition pour siblier photo cliquer------
             if (e.target.nodeName == "VIDEO") {
               var url = e.target.children[0].src;
@@ -136,7 +138,7 @@ function afficheProfil(profil, media) {
               <img id="imgToSlide"  src="${sourceImg}" alt="${e.target.alt}">
               <h3 class="ItemeTitle">${namePhoto}</h3>
                `;
-                slider(itemeArrayPhotos, firstName);
+                slider(itemeArrayPhotos, firstName, index);
               }
             }
           });
@@ -146,29 +148,42 @@ function afficheProfil(profil, media) {
             imgcontainer.innerHTML = "";
             noneAll.classList.remove("none");
             modalPhoto.classList.remove("afficheModalPhoto");
+            keybordForm();
           });
+          document.addEventListener("keydown", (event) => {
+            if (event.key == "Enter") {
+              imgcontainer.innerHTML = "";
+              noneAll.classList.remove("none");
+              modalPhoto.classList.remove("afficheModalPhoto");
+              keybordForm();
+            }
+          });
+          contact_modal.style.display = "none";
         });
       }
     }
   });
 }
 //--------clique sur l'icon like-------------
-function nombreLike(itemMedia) {
+function nombreLike() {
   for (let i = 0; i < likeIcons.length; i++) {
     likeIcons[i].addEventListener("click", (e) => {
       if (likeIcons[i].classList.contains("liked")) {
-        //console.log(e.target.parentElement.children[0]);
         e.target.parentElement.parentElement.children[0].textContent--;
-        likeIcons[i].classList.remove("liked");
-        likeIcons[i].classList.remove("color");
+        e.target.classList.remove("liked");
+        e.target.classList.remove("color");
+        somme--;
       } else {
         e.target.parentElement.parentElement.children[0].textContent++;
-        likeIcons[i].classList.add("liked");
-        likeIcons[i].classList.add("color");
+        e.target.classList.add("liked");
+        e.target.classList.add("color");
+        somme++;
       }
+      like_priceTotal.children[0].children[0].textContent = somme;
     });
   }
 }
+nombreLike();
 //--------function pour determiner les img et les video-----
 function isVideo(fileName) {
   const videoExtensions = ["mp4", "avi", "mov"];
@@ -181,10 +196,23 @@ function isImage(fileName) {
   const fileExtension = fileName.split(".").pop().toLowerCase();
   return imageExtensions.includes(fileExtension);
 }
-//-------function pour slider les photos----
-function slider(itemeArrayPhotos, firstName) {
-  let currentIndex = 0;
 
+//-------function pour slider les photos----
+function slider(itemeArrayPhotos, firstName, index) {
+  let currentIndex = 0;
+  currentIndex = index;
+  //-------------slide avec les fleche clavier--------
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowRight") {
+      currentIndex = (currentIndex + 1) % ArrayPhotos.length;
+      updateSlider(itemeArrayPhotos, firstName, currentIndex);
+    } else if (event.key === "ArrowLeft") {
+      currentIndex =
+        (currentIndex - 1 + ArrayPhotos.length) % ArrayPhotos.length;
+      updateSlider(itemeArrayPhotos, firstName, currentIndex);
+    }
+  });
+  //-------------slide avec le cuseur--------
   chevronplus[0].addEventListener("click", (e) => {
     currentIndex = (currentIndex + 1) % ArrayPhotos.length;
     updateSlider(itemeArrayPhotos, firstName, currentIndex);
@@ -220,6 +248,7 @@ function slider(itemeArrayPhotos, firstName) {
     }
   }
 }
+
 //------------function triage----------------------
 let ArrayTries = [];
 function trie() {
@@ -265,7 +294,7 @@ function handleItemClick(e, index) {
   });
   addClickEventListeners();
   //--------------------------------------------------------
-  const photos = Array.from(section.getElementsByClassName("container"));
+  let photos = Array.from(section.getElementsByClassName("container"));
   if (e.target.textContent == "Populaire") {
     // Triez les photos en fonction du nombre de likes
     photos.sort(function (a, b) {
@@ -291,20 +320,93 @@ function handleItemClick(e, index) {
   // Ajoutez les photos triées au conteneur
   photos.forEach(function (photo) {
     section.appendChild(photo);
-    //console.log(photo.children[1].children[1].children[1]);
-    //--------------click du like----------------
-    //return nombreLike(itemMedia)
-    for (let i = 0; i < likeIcons.length; i++) {
-      likeIcons[i].addEventListener("click", (e) => {
-        likeIcons[i].classList.add("color");
-      });
-    }
+    //-------liker----------
   });
 }
 
-function keyboxdeplacement(){
-
+function totalLikes() {
+  for (let i = 0; i < ArrayLikes.length; i++) {
+    somme += ArrayLikes[i];
+  }
+  like_priceTotal.innerHTML += `
+  <div class="like_total">
+      <p class="likeTotalPara">${somme}</p>
+      <ion-icon name="heart"></ion-icon>
+      </div>
+      <div class="prise_jour">
+        <div class="prise">15£/ jour</div>
+      </div>
+  `;
 }
-keyboxdeplacement()
+
+//------------se deplacer avec les fleche---------------------
+let currentIndex = 0;
+let focusableArray;
+function keyFunction() {
+  document.addEventListener("keydown", (event) => {
+    const focusableElements = document.querySelectorAll(
+      "div.img,div.img_block,ion-icon.like, h1, h2, h3, p,ion-icon.chevron_ouvert,div.elementTexteClique,button#btnContact"
+    );
+
+    // Filtrer les éléments visibles (display: block)
+    const visibleElements = Array.from(focusableElements).filter(
+      (element) => window.getComputedStyle(element).display !== "none"
+    );
+    //console.log(visibleElements);
+    focusableArray = visibleElements;
+    if (currentIndex === -1) {
+      currentIndex = 0;
+      focusableArray[currentIndex].classList.add("activeOne");
+      focusableArray[currentIndex].focus();
+    }
+    switch (event.key) {
+      case "ArrowLeft":
+        navigate(-1);
+        break;
+      case "ArrowRight":
+        navigate(1);
+        break;
+      case "ArrowUp":
+        navigate(-5);
+        break;
+      case "ArrowDown":
+        navigate(5);
+        break;
+      case "Enter":
+        clickPhotos();
+        clickActivePhotos();
+        break;
+    }
+  });
+}
+function navigate(direction) {
+  focusableArray[currentIndex].classList.remove("activeOne");
+  currentIndex += direction;
+  currentIndex = Math.max(0, Math.min(currentIndex, focusableArray.length - 1));
+
+  focusableArray[currentIndex].classList.add("activeOne");
+  focusableArray[currentIndex].focus();
+  focusableArray[currentIndex].scrollIntoView({
+    behavior: "smooth",
+    block: "center",
+  });
+
+  //--------ouverture du triee-------------
+  const currentElement = focusableArray[currentIndex];
+  const classesList = Array.from(currentElement.classList);
+}
+function clickActivePhotos() {
+  const elementToClick = focusableArray[currentIndex];
+  if (elementToClick) {
+    elementToClick.click();
+  }}
+function clickPhotos() {
+  const elementToClick = focusableArray[currentIndex];
+  if (elementToClick.children[0]) {
+    elementToClick.children[0].click();
+  }
+}
+
+keyFunction();
 addClickEventListeners();
 getPhotographers();

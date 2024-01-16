@@ -24,7 +24,7 @@
     <main id="main">
       <div class="photograph-header">
         <div class="info_persso"></div>
-        <button class="contact_button" onclick="displayModal()">Contactez-moi</button>
+        <button class="contact_button" id="btnContact" onclick="displayModal()">Contactez-moi</button>
         <div class="img"></div>
       </div>
       <!-- -------------trier----------- -->
@@ -44,8 +44,8 @@
   <div id="contact_modal">
     <div class="modal">
       <header>
-        <h2>Contactez-moi</h2>
-        <img src="assets/icons/close.svg" onclick="closeModal()" />
+        <h2 class="title_form">Contactez-moi</h2>
+        <img class="icon_close" src="assets/icons/close.svg" onclick="closeModal()" />
       </header>
       <form class="myForm">
         <div>
@@ -65,7 +65,7 @@
             <label for="Message">Votre message</label>
             <textarea id="message" name="message" rows="4" cols="28"></textarea>
           </div>
-          <button class="contact_button">Envoyer</button>
+          <button class="contact_button validation" id="btn_valid_form">Envoyer</button>
       </form>
     </div>
   </div>
