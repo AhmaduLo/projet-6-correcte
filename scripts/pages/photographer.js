@@ -53,53 +53,72 @@ function afficheProfil(profil, media) {
       //-------pour couper le prenom----
       var fullName = element.name;
       var firstName = fullName.split(" ")[0];
+
+      class realisation {
+        constructor(data) {
+          this.likes = data.likes;
+          this.id = data.id;
+          this.imagePath = data.image;
+          this.videoPath = data.video;
+          this.photographerId = data.photographerId;
+          this.title = data.title;
+          this.price = data.price;
+        }
+
+        get image() {
+          return this.imagePath
+            ? `assets/albumPhoto/${firstName}/${this.imagePath}`
+            : null;
+        }
+
+        get video() {
+          return this.videoPath
+            ? `assets/albumPhoto/${firstName}/${this.videoPath}`
+            : null;
+        }
+      }
       //-------------afficher les realisation du photographe------------
       media.forEach((itemMedia) => {
         let imageElement = "";
         let videoElement = "";
-        let picture = "";
-        let video = "";
 
         //----si photographerId est egale a id du photographe tu m'affiche c'est realisation---
         if (itemMedia.photographerId == element.id) {
-          if (itemMedia.image) {
-            picture = `assets/albumPhoto/${firstName}/${itemMedia.image}`;
+          const instance = new realisation(itemMedia);
+          if (instance.image) {
             imageElement = `
-              <div class="img_block">
-              <img src="${picture}" class="imageDisplay" alt="${itemMedia.image}" />
-              </div>
-              `;
-            ArrayPhotos.push(itemMedia.image);
-          } else if (itemMedia.video) {
-            video = `assets/albumPhoto/${firstName}/${itemMedia.video}`;
+            <div class="img_block">
+            <img src="${instance.image}" class="imageDisplay" alt="${instance.image}" />
+            </div>
+            `;
+            ArrayPhotos.push(instance.image);
+          }
+          if (instance.video) {
             videoElement = `
             <div class="img_block">
               <video class="imageDisplay" style="cursor: pointer;" controls width="100%" height="100% id="videoPlayer">
-              <source src="${video}"  alt="${itemMedia.video}" type="video/mp4" />
+              <source src="${instance.video}"  alt="${instance.video}" type="video/mp4" />
               </video>
               </div>
               `;
-            ArrayPhotos.push(itemMedia.video);
+            ArrayPhotos.push(instance.video);
           }
-
           //------------affichage des elements des photos-------------------
           section.innerHTML += `
-            <div class="container" data-likes=${itemMedia.likes} data-date=${itemMedia.date}>
-           
-            ${imageElement}
-            ${videoElement}
-      
-            <div class="name_like">
+          <div class="container" data-likes=${itemMedia.likes} data-date=${itemMedia.date}>
+          ${imageElement}
+          ${videoElement}
+          <div class="name_like">
             <div class="h3">
-            <h3 class="title">${itemMedia.title}</h3> 
+            <h3 class="title">${instance.title}</h3> 
             </div>
             <div class="nmberIcon">
-            <p class="paraNumbIcon">${itemMedia.likes}</p>
+            <p class="paraNumbIcon">${instance.likes}</p>
             <span><ion-icon class="like" name="heart"></ion-icon></span>
             </div>
             </div>
-            </div>
-            `;
+          </div>
+          `;
           ArrayLikes.push(itemMedia.likes);
           nombreLike(itemMedia);
         }
@@ -119,28 +138,26 @@ function afficheProfil(profil, media) {
 
             //------condition pour siblier photo cliquer------
             if (e.target.nodeName == "VIDEO") {
-              var url = e.target.children[0].src;
-              var urlParts = url.split("/");
-              var fileNameVideo = urlParts[urlParts.length - 1];
-              if (itemeArrayPhotos == fileNameVideo) {
-                const sourceVideo = `assets/albumPhoto/${firstName}/${itemeArrayPhotos}`;
+              const altVideo = e.target.children[0].getAttribute("alt");
+
+              if (itemeArrayPhotos == altVideo) {
                 imgcontainer.innerHTML += `
                     <video class="imageDisplay" controls width="100%" height="100% id="videoPlayer">
-                    <source src="${sourceVideo}"type="video/mp4" /></video>
+                    <source src="${itemeArrayPhotos}"type="video/mp4" /></video>
                     <h3 class="ItemeTitle">${namePhoto}</h3>
                     `;
-                slider(itemeArrayPhotos, firstName);
+                slider(itemeArrayPhotos, firstName,index);
               }
             } else {
               if (itemeArrayPhotos == e.target.alt) {
-                const sourceImg = `assets/albumPhoto/${firstName}/${itemeArrayPhotos}`;
                 imgcontainer.innerHTML += `
-              <img id="imgToSlide"  src="${sourceImg}" alt="${e.target.alt}">
+              <img id="imgToSlide"  src="${itemeArrayPhotos}" alt="${e.target.alt}">
               <h3 class="ItemeTitle">${namePhoto}</h3>
                `;
                 slider(itemeArrayPhotos, firstName, index);
               }
             }
+            
           });
 
           //--------------close module photo------------------
@@ -199,8 +216,7 @@ function isImage(fileName) {
 
 //-------function pour slider les photos----
 function slider(itemeArrayPhotos, firstName, index) {
-  let currentIndex = 0;
-  currentIndex = index;
+  let currentIndex = index;
   //-------------slide avec les fleche clavier--------
   document.addEventListener("keydown", (event) => {
     if (event.key === "ArrowRight") {
@@ -223,17 +239,16 @@ function slider(itemeArrayPhotos, firstName, index) {
     updateSlider(itemeArrayPhotos, firstName, currentIndex);
   });
 
-  function updateSlider(itemeArrayPhotos, firstName, e) {
+  function updateSlider(itemeArrayPhotos, firstName, currentIndex) {
     itemeArrayPhotos = ArrayPhotos[currentIndex];
-    const source = `assets/albumPhoto/${firstName}/${itemeArrayPhotos}`;
-    var urlParts = source.split("/");
+    var urlParts = itemeArrayPhotos.split("/");
     const fileName = urlParts[urlParts.length - 1];
     const fileNamePhoto = fileName.replace(/\.[^/.]+$/, "");
     imgcontainer.innerHTML = "";
     if (isImage(fileName)) {
       imgcontainer.innerHTML += `
     <div class="containt_all" style="display: block;">
-    <img id="imgToSlide"  src="${source}" alt="${fileNamePhoto}">
+    <img id="imgToSlide"  src="${itemeArrayPhotos}" alt="${fileNamePhoto}">
     <h3 class="ItemeTitle">${fileNamePhoto}</h3>
     </div>
      `;
@@ -241,7 +256,7 @@ function slider(itemeArrayPhotos, firstName, index) {
       imgcontainer.innerHTML += `
     <div class="containt_all" style="display: block;">
     <video class="imageDisplay" controls width="100%" height="100% id="videoPlayer">
-    <source src="${source}"type="video/mp4" /></video>
+    <source src="${itemeArrayPhotos}"type="video/mp4" /></video>
     <h3 class="ItemeTitle">${fileNamePhoto}</h3>
     </div>
      `;
@@ -399,7 +414,8 @@ function clickActivePhotos() {
   const elementToClick = focusableArray[currentIndex];
   if (elementToClick) {
     elementToClick.click();
-  }}
+  }
+}
 function clickPhotos() {
   const elementToClick = focusableArray[currentIndex];
   if (elementToClick.children[0]) {
