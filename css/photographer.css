@@ -200,7 +200,7 @@ section .container .name_like .like.color {
   display: none;
 }
 .modalPhoto .imgcontainer {
-  width: 50%;
+  width: auto;
   height: 600px;
 }
 .modalPhoto .imgcontainer img {
