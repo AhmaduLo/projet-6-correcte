@@ -15,17 +15,19 @@ const containtTrie = document.querySelector(".containtTrie");
 const chevron_ouvert = document.getElementsByClassName("chevron_ouvert");
 const containerTrier = document.querySelector(".containerTrier");
 
+// Récupération du fragment d'URL et de l'ID
 var fragmentUrl = window.location.hash;
 var idRecupere = fragmentUrl.slice(1);
 
+// Déclaration de tableaux et variables pour stocker les likes et les photos
 const ArrayLikes = [];
 let somme = 0;
 const ArrayPhotos = [];
-let currentIndex = -1; // Déclaration de currentIndex
-let focusableArray = []; // Déclaration de focusableArray
+let currentIndex = -1; // Déclaration de currentIndex pour la navigation
+let focusableArray = []; // Déclaration de focusableArray pour la navigation
 const ArrayTries = [{ name: "Populaire" }, { name: "Date" }, { name: "Titre" }];
+// Fonction asynchrone pour récupérer les données des photographes
 
-//---------Fetch des données des photographes--------------
 async function getPhotographers() {
   try {
     const response = await fetch(
@@ -41,23 +43,24 @@ async function getPhotographers() {
   }
 }
 
-//---------Affichage du profil--------------
+// Fonction pour afficher les profils et médias des photographes
 function afficheProfil(profil, media) {
   profil.forEach((element) => {
     if (element.id == idRecupere) {
-      displayProfileInfo(element);
+      displayProfileInfo(element); // Affiche les informations du profil
       const firstName = element.name.split(" ")[0];
       media.forEach((itemMedia) => {
         if (itemMedia.photographerId == element.id) {
-          displayMedia(itemMedia, firstName);
+          displayMedia(itemMedia, firstName); // Affiche les médias associés au profil
         }
       });
-      setupEventListeners();
-      totalLikes();
+      setupEventListeners(); // Initialise les écouteurs d'événements
+      totalLikes(); // Calcule et affiche le total des likes
     }
   });
 }
 
+// Fonction pour afficher les informations du profil
 function displayProfileInfo(element) {
   info_persso.innerHTML = `
         <h2>${element.name}</h2>
@@ -68,6 +71,7 @@ function displayProfileInfo(element) {
   img.innerHTML = `<img src="${picture}" alt="profil photographe">`;
 }
 
+// Fonction pour afficher les médias
 function displayMedia(itemMedia, firstName) {
   const instance = new Realisation(itemMedia, firstName);
   let mediaElement = instance.getMediaElement();
@@ -89,7 +93,7 @@ function displayMedia(itemMedia, firstName) {
   addImageClickEventListeners(); // Ajout des écouteurs d'événements pour les images
 }
 
-//---------Classe de réalisation--------------
+// Classe de réalisation pour les médias
 class Realisation {
   constructor(data, firstName) {
     this.likes = data.likes;
@@ -104,6 +108,7 @@ class Realisation {
     this.price = data.price;
   }
 
+  // Méthode pour obtenir l'élément HTML du média
   getMediaElement() {
     if (this.imagePath) {
       return `<div class="img_block"><img src="${this.imagePath}" class="imageDisplay" alt="${this.imagePath}"/></div>`;
@@ -117,12 +122,13 @@ class Realisation {
     return "";
   }
 
+  // Méthode pour obtenir le chemin du média
   getMediaPath() {
     return this.imagePath || this.videoPath;
   }
 }
 
-//------------Fonctions pour gérer les likes------------
+// Fonction pour gérer les likes
 function nombreLike() {
   for (let i = 0; i < likeIcons.length; i++) {
     likeIcons[i].addEventListener("click", (e) => {
@@ -143,15 +149,17 @@ function nombreLike() {
       }
 
       likeCountElement.textContent = likeCount;
-      updateTotalLikes();
+      updateTotalLikes(); // Met à jour le total des likes affiché
     });
   }
 }
 
+// Fonction pour mettre à jour le total des likes
 function updateTotalLikes() {
   like_priceTotal.children[0].children[0].textContent = somme;
 }
 
+// Fonction pour calculer et afficher le total des likes
 function totalLikes() {
   somme = ArrayLikes.reduce((acc, like) => acc + like, 0);
   like_priceTotal.innerHTML = `
@@ -165,17 +173,19 @@ function totalLikes() {
     `;
 }
 
-//---------------Fonctions pour afficher les images et vidéos-------
+// Fonction pour vérifier si un fichier est une vidéo
 function isVideo(fileName) {
   const videoExtensions = ["mp4", "avi", "mov"];
   return videoExtensions.includes(fileName.split(".").pop().toLowerCase());
 }
 
+// Fonction pour vérifier si un fichier est une image
 function isImage(fileName) {
   const imageExtensions = ["jpg", "jpeg", "png", "gif"];
   return imageExtensions.includes(fileName.split(".").pop().toLowerCase());
 }
 
+// Fonction pour gérer le slider des médias
 function slider(currentIndex) {
   document.addEventListener("keydown", handleKeyDown);
   chevronplus[0].addEventListener("click", handleNext);
@@ -186,7 +196,8 @@ function slider(currentIndex) {
       currentIndex = (currentIndex + 1) % ArrayPhotos.length;
       updateSlider(currentIndex);
     } else if (event.key === "ArrowLeft") {
-      currentIndex = (currentIndex - 1 + ArrayPhotos.length) % ArrayPhotos.length;
+      currentIndex =
+        (currentIndex - 1 + ArrayPhotos.length) % ArrayPhotos.length;
       updateSlider(currentIndex);
     } else if (event.key === "Escape") {
       closeModal();
@@ -207,7 +218,7 @@ function slider(currentIndex) {
     const item = ArrayPhotos[index];
     if (!item) return; // Vérification si l'élément est défini
 
-    imgcontainer.innerHTML = '';
+    imgcontainer.innerHTML = "";
     if (isImage(item)) {
       imgcontainer.innerHTML = `<img id="imgToSlide" src="${item}" alt="image">`;
     } else if (isVideo(item)) {
@@ -217,32 +228,34 @@ function slider(currentIndex) {
     }
   }
 
+  // Fonction pour nettoyer les écouteurs d'événements
   function cleanup() {
     document.removeEventListener("keydown", handleKeyDown);
     chevronplus[0].removeEventListener("click", handleNext);
     chevronmoins[0].removeEventListener("click", handlePrev);
   }
 
-  return cleanup;
+  return cleanup; // Retourne la fonction de nettoyage
 }
 
-// Ajout de l'écouteur d'événements pour les images
+// Ajout des écouteurs d'événements pour les images
 function addImageClickEventListeners() {
   const img_blocks = document.querySelectorAll(".img_block");
   img_blocks.forEach((img_block, index) => {
     img_block.addEventListener("click", (e) => {
       const item = ArrayPhotos[index];
       if (item) {
-        openModal(item, index);
+        openModal(item, index); // Ouvre le modal pour l'image sélectionnée
       }
     });
   });
 }
 
+// Fonction pour ouvrir le modal
 function openModal(item, index) {
   if (!item) return; // Vérification si l'élément est défini
 
-  imgcontainer.innerHTML = '';
+  imgcontainer.innerHTML = "";
   if (isImage(item)) {
     imgcontainer.innerHTML = `<img id="imgToSlide" src="${item}" alt="image">`;
   } else if (isVideo(item)) {
@@ -267,17 +280,17 @@ function openModal(item, index) {
       closeModal(cleanupSlider);
     }
   }
+  function closeModal(cleanupSlider) {
+    console.log("yessss"); // Log pour déboguer
+    imgcontainer.innerHTML = "";
+    modalPhoto.classList.remove("afficheModalPhoto");
+    noneAll.classList.remove("none");
+    cleanupSlider();
+    document.removeEventListener("keydown", handleEscape);
+  }
 }
 
-function closeModal(cleanupSlider) {
-  imgcontainer.innerHTML = '';
-  modalPhoto.classList.remove("afficheModalPhoto");
-  noneAll.classList.remove("none");
-  cleanupSlider();
-  document.removeEventListener("keydown", handleEscape);
-}
-
-//--------------Fonction de tri-----------
+// Fonction de tri des éléments
 function trie() {
   ArrayTries.forEach((item) => {
     containerTrier.innerHTML += `<div class="elementTexteClique">${item.name}</div><span></span>`;
@@ -288,9 +301,10 @@ function trie() {
     chevron_ouvert[0].classList.toggle("rotate");
   });
 
-  addClickEventListeners();
+  addClickEventListeners(); // Ajout des écouteurs d'événements pour les éléments de tri
 }
 
+// Ajout des écouteurs d'événements pour les éléments de tri
 function addClickEventListeners() {
   const elementTexteClique = document.querySelectorAll(".elementTexteClique");
   elementTexteClique.forEach((element, index) => {
@@ -300,6 +314,7 @@ function addClickEventListeners() {
   });
 }
 
+// Fonction pour gérer le clic sur les éléments de tri
 function handleItemClick(e, index) {
   const clickedItem = ArrayTries[index];
   ArrayTries[index] = ArrayTries[0];
@@ -336,7 +351,7 @@ function handleItemClick(e, index) {
   addImageClickEventListeners(); // Ajout des écouteurs d'événements pour les images après le tri
 }
 
-//------------Fonctions pour la navigation avec le clavier------------
+// Fonction pour la navigation avec le clavier
 function keyFunction() {
   document.addEventListener("keydown", (event) => {
     const focusableElements = document.querySelectorAll(
@@ -374,6 +389,7 @@ function keyFunction() {
   });
 }
 
+// Fonction pour naviguer entre les éléments avec le clavier
 function navigate(direction) {
   focusableArray[currentIndex].classList.remove("activeOne");
   currentIndex += direction;
@@ -387,6 +403,7 @@ function navigate(direction) {
   });
 }
 
+// Fonction pour cliquer sur les photos avec le clavier
 function clickPhotos() {
   const elementToClick = focusableArray[currentIndex];
   if (elementToClick.children[0]) {
@@ -394,7 +411,7 @@ function clickPhotos() {
   }
 }
 
-//-------Initialisation------------
+// Initialisation des écouteurs d'événements
 function setupEventListeners() {
   trie();
   nombreLike();
@@ -403,4 +420,5 @@ function setupEventListeners() {
   addImageClickEventListeners(); // Assurez-vous que les écouteurs d'événements pour les images sont initialisés
 }
 
+// Appel de la fonction pour récupérer les données des photographes
 getPhotographers();
