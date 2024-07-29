@@ -5,7 +5,7 @@ function displayModal() {
   noneAll.classList.add("none");
   return keybordForm(); // Appel de la fonction keybordForm ici
 }
-displayModal()
+// console.log(displayModal());
 function closeModal() {
   const noneAll = document.querySelector(".noneAll");
   const modal = document.getElementById("contact_modal");

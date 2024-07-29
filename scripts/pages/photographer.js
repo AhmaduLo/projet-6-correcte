@@ -376,7 +376,6 @@ function handleItemClick(index) {
   section.innerHTML = "";
   photos.forEach((photo) => section.appendChild(photo));
   addClickEventListeners();
-  addImageClickEventListeners(); // Ajout des écouteurs d'événements pour les images après le tri
 }
 
 // Fonction pour la navigation avec le clavier
