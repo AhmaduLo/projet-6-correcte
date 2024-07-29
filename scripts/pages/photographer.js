@@ -26,8 +26,8 @@ const ArrayPhotos = [];
 let currentIndex = -1; // Déclaration de currentIndex pour la navigation
 let focusableArray = []; // Déclaration de focusableArray pour la navigation
 const ArrayTries = [{ name: "Populaire" }, { name: "Date" }, { name: "Titre" }];
-// Fonction asynchrone pour récupérer les données des photographes
 
+// Fonction asynchrone pour récupérer les données des photographes
 async function getPhotographers() {
   try {
     const response = await fetch(
@@ -52,10 +52,10 @@ function afficheProfil(profil, media) {
       media.forEach((itemMedia) => {
         if (itemMedia.photographerId == element.id) {
           displayMedia(itemMedia, firstName); // Affiche les médias associés au profil
+          totalLikes(itemMedia); // Calcule et affiche le total des likes
         }
       });
       setupEventListeners(); // Initialise les écouteurs d'événements
-      totalLikes(); // Calcule et affiche le total des likes
     }
   });
 }
@@ -73,9 +73,9 @@ function displayProfileInfo(element) {
 
 // Fonction pour afficher les médias
 function displayMedia(itemMedia, firstName) {
-  const instance = new Realisation(itemMedia, firstName);
+  // Utilisation de la MediaFactory pour créer une instance de média (image ou vidéo)
+  const instance = MediaFactory.createMedia(itemMedia, firstName);
   let mediaElement = instance.getMediaElement();
-
   section.innerHTML += `
         <div class="container" data-likes=${itemMedia.likes} data-date=${itemMedia.date}>
             ${mediaElement}
@@ -93,38 +93,68 @@ function displayMedia(itemMedia, firstName) {
   addImageClickEventListeners(); // Ajout des écouteurs d'événements pour les images
 }
 
-// Classe de réalisation pour les médias
-class Realisation {
+// Classe abstraite Media
+class Media {
   constructor(data, firstName) {
     this.likes = data.likes;
     this.id = data.id;
-    this.imagePath = data.image
-      ? `assets/albumPhoto/${firstName}/${data.image}`
-      : null;
-    this.videoPath = data.video
-      ? `assets/albumPhoto/${firstName}/${data.video}`
-      : null;
+    this.photographerId = data.photographerId;
     this.title = data.title;
     this.price = data.price;
+    this.firstName = firstName;
   }
 
-  // Méthode pour obtenir l'élément HTML du média
   getMediaElement() {
-    if (this.imagePath) {
-      return `<div class="img_block"><img src="${this.imagePath}" class="imageDisplay" alt="${this.imagePath}"/></div>`;
-    } else if (this.videoPath) {
-      return `<div class="img_block">
-                        <video class="imageDisplay" style="cursor: pointer;" controls width="100%" height="100%">
-                            <source src="${this.videoPath}" alt="${this.videoPath}" type="video/mp4"/>
-                        </video>
-                    </div>`;
-    }
-    return "";
+    throw new Error("Cette méthode doit être implémentée par les sous-classes");
+  }
+}
+
+// Sous-classe ImageMedia
+class ImageMedia extends Media {
+  constructor(data, firstName) {
+    super(data, firstName);
+    this.imagePath = `assets/albumPhoto/${firstName}/${data.image}`;
   }
 
-  // Méthode pour obtenir le chemin du média
+  getMediaElement() {
+    return `<div class="img_block"><img src="${this.imagePath}" class="imageDisplay" alt="${this.imagePath}"/></div>`;
+  }
+
   getMediaPath() {
-    return this.imagePath || this.videoPath;
+    return this.imagePath;
+  }
+}
+
+// Sous-classe VideoMedia
+class VideoMedia extends Media {
+  constructor(data, firstName) {
+    super(data, firstName);
+    this.videoPath = `assets/albumPhoto/${firstName}/${data.video}`;
+  }
+
+  getMediaElement() {
+    return `<div class="img_block">
+              <video class="imageDisplay" style="cursor: pointer;" controls width="100%" height="100%">
+                <source src="${this.videoPath}" alt="${this.videoPath}" type="video/mp4"/>
+              </video>
+            </div>`;
+  }
+
+  getMediaPath() {
+    return this.videoPath;
+  }
+}
+
+// Classe MediaFactory pour créer des objets Media
+class MediaFactory {
+  static createMedia(data, firstName) {
+    if (data.image) {
+      return new ImageMedia(data, firstName);
+    } else if (data.video) {
+      return new VideoMedia(data, firstName);
+    } else {
+      throw new Error("Type de média inconnu");
+    }
   }
 }
 
@@ -160,7 +190,7 @@ function updateTotalLikes() {
 }
 
 // Fonction pour calculer et afficher le total des likes
-function totalLikes() {
+function totalLikes(itemMedia) {
   somme = ArrayLikes.reduce((acc, like) => acc + like, 0);
   like_priceTotal.innerHTML = `
         <div class="like_total">
@@ -168,7 +198,7 @@ function totalLikes() {
             <ion-icon name="heart"></ion-icon>
         </div>
         <div class="prise_jour">
-            <div class="prise">15£/ jour</div>
+            <div class="prise">${itemMedia.price}£/ jour</div>
         </div>
     `;
 }
@@ -200,7 +230,8 @@ function slider(currentIndex) {
         (currentIndex - 1 + ArrayPhotos.length) % ArrayPhotos.length;
       updateSlider(currentIndex);
     } else if (event.key === "Escape") {
-      closeModal();
+      closeModule();
+      console.log("yesss");
     }
   }
 
@@ -254,7 +285,6 @@ function addImageClickEventListeners() {
 // Fonction pour ouvrir le modal
 function openModal(item, index) {
   if (!item) return; // Vérification si l'élément est défini
-
   imgcontainer.innerHTML = "";
   if (isImage(item)) {
     imgcontainer.innerHTML = `<img id="imgToSlide" src="${item}" alt="image">`;
@@ -277,11 +307,11 @@ function openModal(item, index) {
 
   function handleEscape(event) {
     if (event.key === "Escape") {
+      console.log("yes");
       closeModal(cleanupSlider);
     }
   }
   function closeModal(cleanupSlider) {
-    console.log("yessss"); // Log pour déboguer
     imgcontainer.innerHTML = "";
     modalPhoto.classList.remove("afficheModalPhoto");
     noneAll.classList.remove("none");
@@ -295,7 +325,6 @@ function trie() {
   ArrayTries.forEach((item) => {
     containerTrier.innerHTML += `<div class="elementTexteClique">${item.name}</div><span></span>`;
   });
-
   chevron_ouvert[0].addEventListener("click", () => {
     containtTrie.classList.toggle("afterclick");
     chevron_ouvert[0].classList.toggle("rotate");
@@ -355,7 +384,7 @@ function handleItemClick(e, index) {
 function keyFunction() {
   document.addEventListener("keydown", (event) => {
     const focusableElements = document.querySelectorAll(
-      "div.img, div.img_block, ion-icon.like, h1, h2, h3, p, ion-icon.chevron_ouvert, div.elementTexteClique, button#btnContact"
+      "div.img, div.img_block, ion-icon.like,  ion-icon.chevron_ouvert, div.elementTexteClique, button#btnContact"
     );
 
     const visibleElements = Array.from(focusableElements).filter(
