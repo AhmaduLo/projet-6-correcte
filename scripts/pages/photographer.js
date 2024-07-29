@@ -3,17 +3,16 @@ const img = document.querySelector(".img");
 const section = document.querySelector("section");
 const like_priceTotal = document.querySelector(".like_priceTotal");
 const likeIcons = document.getElementsByClassName("like");
-const img_block = document.getElementsByClassName("img_block");
 const modalPhoto = document.querySelector(".modalPhoto");
 const noneAll = document.querySelector(".noneAll");
 const closeModule = document.getElementsByClassName("closeModule");
 const imgcontainer = document.querySelector(".imgcontainer");
 const chevronplus = document.getElementsByClassName("chevronplus");
 const chevronmoins = document.getElementsByClassName("chevronmoins");
-const contact_modal = document.getElementById("contact_modal");
 const containtTrie = document.querySelector(".containtTrie");
 const chevron_ouvert = document.getElementsByClassName("chevron_ouvert");
 const containerTrier = document.querySelector(".containerTrier");
+
 
 // Récupération du fragment d'URL et de l'ID
 var fragmentUrl = window.location.hash;
@@ -273,7 +272,7 @@ function slider(currentIndex) {
 function addImageClickEventListeners() {
   const img_blocks = document.querySelectorAll(".img_block");
   img_blocks.forEach((img_block, index) => {
-    img_block.addEventListener("click", (e) => {
+    img_block.addEventListener("click", () => {
       const item = ArrayPhotos[index];
       if (item) {
         openModal(item, index); // Ouvre le modal pour l'image sélectionnée
@@ -337,14 +336,14 @@ function trie() {
 function addClickEventListeners() {
   const elementTexteClique = document.querySelectorAll(".elementTexteClique");
   elementTexteClique.forEach((element, index) => {
-    element.addEventListener("click", (e) => {
-      handleItemClick(e, index);
+    element.addEventListener("click", () => {
+      handleItemClick(index);
     });
   });
 }
 
 // Fonction pour gérer le clic sur les éléments de tri
-function handleItemClick(e, index) {
+function handleItemClick(index) {
   const clickedItem = ArrayTries[index];
   ArrayTries[index] = ArrayTries[0];
   ArrayTries[0] = clickedItem;
@@ -354,13 +353,13 @@ function handleItemClick(e, index) {
   });
 
   let photos = Array.from(section.getElementsByClassName("container"));
-  if (e.target.textContent == "Populaire") {
+  if (ArrayTries[0].name == "Populaire") {
     photos.sort(
       (a, b) =>
         parseInt(b.getAttribute("data-likes")) -
         parseInt(a.getAttribute("data-likes"))
     );
-  } else if (e.target.textContent == "Date") {
+  } else if (ArrayTries[0].name == "Date") {
     photos.sort(
       (a, b) =>
         parseInt(b.getAttribute("data-date")) -
