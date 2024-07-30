@@ -3,7 +3,9 @@ function displayModal() {
   const modal = document.getElementById("contact_modal");
   modal.style.display = "block";
   noneAll.classList.add("none");
-  return keybordForm(); // Appel de la fonction keybordForm ici
+
+  // Ajouter un écouteur d'événements pour la touche Échap
+  document.addEventListener("keydown", handleEscapeKey);
 }
 // console.log(displayModal());
 function closeModal() {
@@ -11,18 +13,25 @@ function closeModal() {
   const modal = document.getElementById("contact_modal");
   modal.style.display = "none";
   noneAll.classList.remove("none");
-  return keyFunction(); // Assurez-vous que keyFunction est définie
+
+  document.removeEventListener("keydown", handleEscapeKey);
 }
 
+// Fonction pour gérer la touche Échap
+function handleEscapeKey(event) {
+  if (event.key === "Escape") {
+    closeModal();
+  }
+}
 const myForm = document.querySelector(".myForm");
 
 function submite() {
   myForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    const prenom = document.getElementById("prenom").value;
-    const nom = document.getElementById("nom").value;
-    const email = document.getElementById("email").value;
-    const message = document.getElementById("message").value;
+    const prenom = document.getElementById("Prenom").value;
+    const nom = document.getElementById("Nom").value;
+    const email = document.getElementById("Email").value;
+    const message = document.getElementById("Message").value;
 
     // Example regex for name (allow only letters and spaces)
     const nameRegex = /^[a-zA-Z\s]+$/;
@@ -54,69 +63,6 @@ function submite() {
     console.log(email);
     console.log(message);
   });
-}
-
-function keybordForm() {
-  let currentIndex = 0;
-  let focusableArray;
-  document.addEventListener("keydown", (event) => {
-    const focusableElements = document.querySelectorAll(
-      "h2.title_form,img.icon_close,button#btn_valid_form,input,textarea"
-    );
-    // Filtrer les éléments visibles (display: block)
-    const visibleElements = Array.from(focusableElements).filter(
-      (element) => window.getComputedStyle(element).display !== "none"
-    );
-    focusableArray = visibleElements;
-    if (currentIndex === -1) {
-      currentIndex = 0;
-      focusableArray[currentIndex].classList.add("activeOne");
-      focusableArray[currentIndex].focus();
-    }
-    switch (event.key) {
-      case "ArrowLeft":
-        navigate(-1);
-        break;
-      case "ArrowRight":
-        navigate(1);
-        break;
-      case "ArrowUp":
-        navigate(-5);
-        break;
-      case "ArrowDown":
-        navigate(5);
-        break;
-      case "Enter":
-        clickActiveContainer();
-        break;
-    }
-    function navigate(direction) {
-      focusableArray[currentIndex].classList.remove("activeOne");
-
-      currentIndex += direction;
-      currentIndex = Math.max(
-        0,
-        Math.min(currentIndex, focusableArray.length - 1)
-      );
-
-      focusableArray[currentIndex].classList.add("activeOne");
-      focusableArray[currentIndex].focus();
-      focusableArray[currentIndex].scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-    }
-    function clickActiveContainer() {
-      const elementToClick = focusableArray[currentIndex];
-      if (elementToClick) {
-        elementToClick.click();
-      }
-    }
-  });
-}
-
-function keyFunction() {
-  // Ajoutez ici votre implémentation de keyFunction si nécessaire
 }
 
 submite();

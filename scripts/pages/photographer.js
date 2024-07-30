@@ -13,7 +13,6 @@ const containtTrie = document.querySelector(".containtTrie");
 const chevron_ouvert = document.getElementsByClassName("chevron_ouvert");
 const containerTrier = document.querySelector(".containerTrier");
 
-
 // Récupération du fragment d'URL et de l'ID
 var fragmentUrl = window.location.hash;
 var idRecupere = fragmentUrl.slice(1);
@@ -22,8 +21,6 @@ var idRecupere = fragmentUrl.slice(1);
 const ArrayLikes = [];
 let somme = 0;
 const ArrayPhotos = [];
-let currentIndex = -1; // Déclaration de currentIndex pour la navigation
-let focusableArray = []; // Déclaration de focusableArray pour la navigation
 const ArrayTries = [{ name: "Populaire" }, { name: "Date" }, { name: "Titre" }];
 
 // Fonction asynchrone pour récupérer les données des photographes
@@ -38,7 +35,7 @@ async function getPhotographers() {
     const data = await response.json();
     afficheProfil(data.photographers, data.media);
   } catch (error) {
-    console.error(error);
+    console.log("erreur");
   }
 }
 
@@ -61,13 +58,13 @@ function afficheProfil(profil, media) {
 
 // Fonction pour afficher les informations du profil
 function displayProfileInfo(element) {
-  info_persso.innerHTML = `
-        <h1>${element.name}</h1>
-        <p>${element.country}, ${element.city}</p>
-        <p>${element.tagline}</p>
+  info_persso.innerHTML = `   
+        <h1 tabindex="0">${element.name}</h1>
+        <p tabindex="0">${element.country}, ${element.city}</p>
+        <p tabindex="0">${element.tagline}</p>
     `;
   const picture = `assets/profil/${element.portrait}`;
-  img.innerHTML = `<img src="${picture}" alt="profil de ${element.name}">`;
+  img.innerHTML = `<img src="${picture}" alt="profil de ${element.name}" tabindex="0">`;
 }
 
 // Fonction pour afficher les médias
@@ -79,10 +76,10 @@ function displayMedia(itemMedia, firstName) {
         <div class="container" data-likes=${itemMedia.likes} data-date=${itemMedia.date}>
             ${mediaElement}
             <div class="name_like">
-                <div class="h3"><h3 class="title">${instance.title}</h3></div>
+                <div class="h3"><h3 class="title" tabindex="0">${instance.title}</h3></div>
                 <div class="nmberIcon">
-                    <p class="paraNumbIcon">${instance.likes}</p>
-                    <span><ion-icon class="like" name="heart"></ion-icon></span>
+                    <p class="paraNumbIcon" tabindex="0">${instance.likes}</p>
+                    <span><ion-icon class="like" name="heart" tabindex="0"></ion-icon></span>
                 </div>
             </div>
         </div>
@@ -116,7 +113,7 @@ class ImageMedia extends Media {
   }
 
   getMediaElement() {
-    return `<div class="img_block"><img src="${this.imagePath}" class="imageDisplay" alt="${this.title}"/></div>`;
+    return `<div class="img_block" tabindex="0"><img src="${this.imagePath}" class="imageDisplay" alt="${this.title}"/></div>`;
   }
 
   getMediaPath() {
@@ -133,7 +130,7 @@ class VideoMedia extends Media {
 
   getMediaElement() {
     return `<div class="img_block">
-              <video class="imageDisplay" style="cursor: pointer;" controls width="100%" height="100%">
+              <video class="imageDisplay" style="cursor: pointer;" controls width="100%" height="100%" tabindex="0">
                 <source src="${this.videoPath}" alt="${this.title}" type="video/mp4"/>
               </video>
             </div>`;
@@ -179,6 +176,10 @@ function nombreLike() {
 
       likeCountElement.textContent = likeCount;
       updateTotalLikes(); // Met à jour le total des likes affiché
+    });
+    // Gestion des likes avec la touche Entrée
+    likeIcons[i].addEventListener("keydown", (e) => {
+      if (e.key === "Enter") likeIcons[i].click();
     });
   }
 }
@@ -228,9 +229,6 @@ function slider(currentIndex) {
       currentIndex =
         (currentIndex - 1 + ArrayPhotos.length) % ArrayPhotos.length;
       updateSlider(currentIndex);
-    } else if (event.key === "Escape") {
-      closeModule();
-      console.log("yesss");
     }
   }
 
@@ -278,6 +276,16 @@ function addImageClickEventListeners() {
         openModal(item, index); // Ouvre le modal pour l'image sélectionnée
       }
     });
+    img_block.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") img_block.click();
+    });
+    // Gestionnaire d'événements pour les écrans tactiles (si nécessaire)
+    img_block.addEventListener("touchstart", () => {
+      const item = ArrayPhotos[index];
+      if (item) {
+        openModal(item, index); // Ouvre le modal pour l'image sélectionnée
+      }
+    });
   });
 }
 
@@ -306,7 +314,6 @@ function openModal(item, index) {
 
   function handleEscape(event) {
     if (event.key === "Escape") {
-      console.log("yes");
       closeModal(cleanupSlider);
     }
   }
@@ -322,7 +329,7 @@ function openModal(item, index) {
 // Fonction de tri des éléments
 function trie() {
   ArrayTries.forEach((item) => {
-    containerTrier.innerHTML += `<div class="elementTexteClique">${item.name}</div><span></span>`;
+    containerTrier.innerHTML += `<div class="elementTexteClique" tabindex="0">${item.name}</div><span></span>`;
   });
   chevron_ouvert[0].addEventListener("click", () => {
     containtTrie.classList.toggle("afterclick");
@@ -339,6 +346,16 @@ function addClickEventListeners() {
     element.addEventListener("click", () => {
       handleItemClick(index);
     });
+
+    // Ajouter un gestionnaire pour la touche Enter
+    element.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        handleItemClick(index);
+      }
+    });
+
+    // Ajouter tabindex pour rendre l'élément focusable
+    element.setAttribute("tabindex", "0");
   });
 }
 
@@ -378,74 +395,36 @@ function handleItemClick(index) {
   addClickEventListeners();
 }
 
-// Fonction pour la navigation avec le clavier
-function keyFunction() {
-  document.addEventListener("keydown", (event) => {
-    const focusableElements = document.querySelectorAll(
-      "div.img, div.img_block, ion-icon.like,  ion-icon.chevron_ouvert, div.elementTexteClique, button#btnContact"
-    );
-
-    const visibleElements = Array.from(focusableElements).filter(
-      (element) => window.getComputedStyle(element).display !== "none"
-    );
-    focusableArray = visibleElements;
-
-    if (currentIndex === -1) {
-      currentIndex = 0;
-      focusableArray[currentIndex].classList.add("activeOne");
-      focusableArray[currentIndex].focus();
-    }
-
-    switch (event.key) {
-      case "ArrowLeft":
-        navigate(-1);
-        break;
-      case "ArrowRight":
-        navigate(1);
-        break;
-      case "ArrowUp":
-        navigate(-5);
-        break;
-      case "ArrowDown":
-        navigate(5);
-        break;
-      case "Enter":
-        clickPhotos();
-        break;
-    }
-  });
-}
-
-// Fonction pour naviguer entre les éléments avec le clavier
-function navigate(direction) {
-  focusableArray[currentIndex].classList.remove("activeOne");
-  currentIndex += direction;
-  currentIndex = Math.max(0, Math.min(currentIndex, focusableArray.length - 1));
-
-  focusableArray[currentIndex].classList.add("activeOne");
-  focusableArray[currentIndex].focus();
-  focusableArray[currentIndex].scrollIntoView({
-    behavior: "smooth",
-    block: "center",
-  });
-}
-
-// Fonction pour cliquer sur les photos avec le clavier
-function clickPhotos() {
-  const elementToClick = focusableArray[currentIndex];
-  if (elementToClick.children[0]) {
-    elementToClick.children[0].click();
-  }
-}
-
 // Initialisation des écouteurs d'événements
 function setupEventListeners() {
   trie();
   nombreLike();
-  keyFunction();
   addClickEventListeners();
   addImageClickEventListeners(); // Assurez-vous que les écouteurs d'événements pour les images sont initialisés
 }
 
 // Appel de la fonction pour récupérer les données des photographes
 getPhotographers();
+
+//---------scroll du page avec les fleche-----
+document.addEventListener("keydown", function (event) {
+  if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+    event.preventDefault(); // Empêche le comportement par défaut de changement de focus
+
+    // Défilement personnalisé
+    const scrollAmount = 100; // Ajustez la valeur pour contrôler la vitesse de défilement
+    if (event.key === "ArrowUp") {
+      window.scrollBy({
+        top: -scrollAmount, // Défilement vers le haut
+        left: 0,
+        behavior: "smooth", // Défilement en douceur
+      });
+    } else if (event.key === "ArrowDown") {
+      window.scrollBy({
+        top: scrollAmount, // Défilement vers le bas
+        left: 0,
+        behavior: "smooth", // Défilement en douceur
+      });
+    }
+  }
+});

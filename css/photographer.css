@@ -307,7 +307,7 @@ form textarea {
   height: auto;
   margin: auto;
   display: flex;
-  /* align-items: center; */
+  align-items: center;
 }
 .trier .containtTrie {
   position: relative;
