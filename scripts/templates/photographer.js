@@ -8,6 +8,7 @@ export function photographerTemplate(data) {
 		const img_div = document.createElement("div")
 		const img = document.createElement("img")
 		img.setAttribute("src", picture)
+		img.setAttribute("alt", "Photo de" + " " + name);
 		const h2 = document.createElement("h2")
 		const h3 = document.createElement("h3")
 		const para1 = document.createElement("p")

@@ -62,12 +62,12 @@ function afficheProfil(profil, media) {
 // Fonction pour afficher les informations du profil
 function displayProfileInfo(element) {
   info_persso.innerHTML = `
-        <h2>${element.name}</h2>
+        <h1>${element.name}</h1>
         <p>${element.country}, ${element.city}</p>
         <p>${element.tagline}</p>
     `;
   const picture = `assets/profil/${element.portrait}`;
-  img.innerHTML = `<img src="${picture}" alt="profil photographe">`;
+  img.innerHTML = `<img src="${picture}" alt="profil de ${element.name}">`;
 }
 
 // Fonction pour afficher les médias
@@ -116,7 +116,7 @@ class ImageMedia extends Media {
   }
 
   getMediaElement() {
-    return `<div class="img_block"><img src="${this.imagePath}" class="imageDisplay" alt="${this.imagePath}"/></div>`;
+    return `<div class="img_block"><img src="${this.imagePath}" class="imageDisplay" alt="${this.title}"/></div>`;
   }
 
   getMediaPath() {
@@ -134,7 +134,7 @@ class VideoMedia extends Media {
   getMediaElement() {
     return `<div class="img_block">
               <video class="imageDisplay" style="cursor: pointer;" controls width="100%" height="100%">
-                <source src="${this.videoPath}" alt="${this.videoPath}" type="video/mp4"/>
+                <source src="${this.videoPath}" alt="${this.title}" type="video/mp4"/>
               </video>
             </div>`;
   }

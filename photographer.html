@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 
 <head>
   <link href="css/style.css" rel="stylesheet" type="text/css" />
@@ -19,7 +19,7 @@
 
   <div class="noneAll">
     <header>
-      <img src="assets/images/logo.png" class="logo" />
+      <img src="assets/images/logo.png" alt="fisheye logo" class="logo" />
     </header>
     <main id="main">
       <div class="photograph-header">
@@ -29,7 +29,7 @@
       </div>
       <!-- -------------trier----------- -->
       <div class="trier">
-        <h3>trier par</h3>
+        <h2>trier par</h2>
         <div class="containtTrie">
           <ion-icon class="chevron_ouvert" name="chevron-down-outline"></ion-icon>
           <div class="containerTrier">
@@ -45,25 +45,25 @@
     <div class="modal">
       <header>
         <h2 class="title_form">Contactez-moi</h2>
-        <img class="icon_close" src="assets/icons/close.svg" onclick="closeModal()" />
+        <img class="icon_close" src="assets/icons/close.svg" alt="icone fermeture modal" onclick="closeModal()" />
       </header>
       <form class="myForm">
         <div>
           <div>
             <label for="Prenom">Prénom</label>
-            <input class="text-control" type="text" id="prenom" name="prenom" />
+            <input class="text-control" type="text" id="Prenom" name="prenom" />
           </div>
           <div>
             <label for="Nom">Nom</label>
-            <input class="text-control" type="text" id="nom" name="nom" />
+            <input class="text-control" type="text" id="Nom" name="nom" />
           </div>
           <div>
             <label for="Email">Email</label>
-            <input class="text-control" type="email" id="email" name="email" />
+            <input class="text-control" type="email" id="Email" name="email" />
           </div>
           <div>
             <label for="Message">Votre message</label>
-            <textarea id="message" name="message" rows="4" cols="28"></textarea>
+            <textarea id="Message" name="message" rows="4" cols="28"></textarea>
           </div>
           <button class="contact_button validation" id="btn_valid_form">Envoyer</button>
       </form>

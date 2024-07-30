@@ -27,59 +27,59 @@ async function init() {
 
 init()
 
-function keyBoxfunc() {
-	let currentIndex = 0
-	document.addEventListener("keydown", (event) => {
-		const focusableElements = document.querySelectorAll("div,img, h1, h2, h3, p")
-		const focusableArray = Array.from(focusableElements)
+// function keyBoxfunc() {
+// 	let currentIndex = 0
+// 	document.addEventListener("keydown", (event) => {
+// 		const focusableElements = document.querySelectorAll("div,img, h1, h2, h3, p")
+// 		const focusableArray = Array.from(focusableElements)
   
-		if (currentIndex === -1) {
-			currentIndex = 0 // Définit sur le premier élément si currentIndex est -1
-			focusableArray[currentIndex].classList.add("active")
-			focusableArray[currentIndex].focus()
-		}
+// 		if (currentIndex === -1) {
+// 			currentIndex = 0 // Définit sur le premier élément si currentIndex est -1
+// 			focusableArray[currentIndex].classList.add("active")
+// 			focusableArray[currentIndex].focus()
+// 		}
   
-		switch (event.key) {
-		case "ArrowLeft":
-			navigate(-1)
-			break
-		case "ArrowRight":
-			navigate(1)
-			break
-		case "ArrowUp":
-			navigate(-5)
-			break
-		case "ArrowDown":
-			navigate(5)
-			break
-		case "Enter":
-			clickElement()
-			break
-		}
+// 		switch (event.key) {
+// 		case "ArrowLeft":
+// 			navigate(-1)
+// 			break
+// 		case "ArrowRight":
+// 			navigate(1)
+// 			break
+// 		case "ArrowUp":
+// 			navigate(-5)
+// 			break
+// 		case "ArrowDown":
+// 			navigate(5)
+// 			break
+// 		case "Enter":
+// 			clickElement()
+// 			break
+// 		}
   
-		function navigate(direction) {
-			// Supprime la classe 'active' de l'élément actuellement sélectionné
-			focusableArray[currentIndex].classList.remove("activeOne")
+// 		function navigate(direction) {
+// 			// Supprime la classe 'active' de l'élément actuellement sélectionné
+// 			focusableArray[currentIndex].classList.remove("activeOne")
   
-			currentIndex += direction
-			currentIndex = Math.max(
-				0,
-				Math.min(currentIndex, focusableArray.length - 1)
-			)
+// 			currentIndex += direction
+// 			currentIndex = Math.max(
+// 				0,
+// 				Math.min(currentIndex, focusableArray.length - 1)
+// 			)
   
-			// Ajoute la classe 'active' à l'élément actuellement sélectionné
-			focusableArray[currentIndex].classList.add("activeOne")
+// 			// Ajoute la classe 'active' à l'élément actuellement sélectionné
+// 			focusableArray[currentIndex].classList.add("activeOne")
   
-			// Donne le focus à l'élément actuellement sélectionné
-			focusableArray[currentIndex].focus()
-		}
-		function clickElement() {
-			// Simuler un clic sur l'élément actuellement focalisé
-			const elementToClick = focusableArray[currentIndex]
-			if (elementToClick) {
-				elementToClick.click()
-			}
-		}
-	})
-}
-keyBoxfunc()
+// 			// Donne le focus à l'élément actuellement sélectionné
+// 			focusableArray[currentIndex].focus()
+// 		}
+// 		function clickElement() {
+// 			// Simuler un clic sur l'élément actuellement focalisé
+// 			const elementToClick = focusableArray[currentIndex]
+// 			if (elementToClick) {
+// 				elementToClick.click()
+// 			}
+// 		}
+// 	})
+// }
+// keyBoxfunc()
